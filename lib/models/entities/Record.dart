@@ -1,22 +1,27 @@
 import 'dart:convert';
 
 class Record {
+  int id;
   final String name;
   Record({
+    this.id,
     this.name,
   });
 
   Record copyWith({
     String name,
+    int id,
   }) {
     return Record(
       name: name ?? this.name,
+      id: id ?? this.id,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'id': id,
     };
   }
 
@@ -25,6 +30,7 @@ class Record {
   
     return Record(
       name: map['name'],
+      id: map['id'],
     );
   }
 
@@ -33,16 +39,17 @@ class Record {
   static Record fromJson(String source) => fromMap(json.decode(source));
 
   @override
-  String toString() => 'Record(name: $name)';
+  String toString() => 'Record(name: $name, id: $id)';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
   
     return o is Record &&
-      o.name == name;
+      o.name == name &&
+      o.id == id;
   }
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => name.hashCode ^ id.hashCode;
 }

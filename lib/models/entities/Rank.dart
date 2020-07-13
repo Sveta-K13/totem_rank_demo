@@ -5,10 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'Record.dart';
 
 class Rank {
+  int id;
   String name;
   DateTime dateTime;
   List<Record> records;
   Rank({
+    this.id,
     this.name,
     this.dateTime,
     this.records,
@@ -16,11 +18,13 @@ class Rank {
 
 
   Rank copyWith({
+    int id,
     String name,
     DateTime dateTime,
     List<Record> records,
   }) {
     return Rank(
+      id: id ?? this.id,
       name: name ?? this.name,
       dateTime: dateTime ?? this.dateTime,
       records: records ?? this.records,
@@ -29,6 +33,7 @@ class Rank {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'dateTime': dateTime?.millisecondsSinceEpoch,
       'records': records?.map((x) => x?.toMap())?.toList(),
@@ -39,9 +44,10 @@ class Rank {
     if (map == null) return null;
   
     return Rank(
+      id: map['id'],
       name: map['name'],
       dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime']),
-      records: List<Record>.from(map['records']?.map((x) => Record.fromMap(x))),
+      records: List<Record>.from(map['records']?.map((x) => Record.fromMap(x as Map<String, dynamic>))),
     );
   }
 
@@ -50,18 +56,26 @@ class Rank {
   static Rank fromJson(String source) => fromMap(json.decode(source));
 
   @override
-  String toString() => 'Rank(name: $name, dateTime: $dateTime, records: $records)';
+  String toString() {
+    return 'Rank(id: $id, name: $name, dateTime: $dateTime, records: $records)';
+  }
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
   
     return o is Rank &&
+      o.id == id &&
       o.name == name &&
       o.dateTime == dateTime &&
       listEquals(o.records, records);
   }
 
   @override
-  int get hashCode => name.hashCode ^ dateTime.hashCode ^ records.hashCode;
+  int get hashCode {
+    return id.hashCode ^
+      name.hashCode ^
+      dateTime.hashCode ^
+      records.hashCode;
+  }
 }
