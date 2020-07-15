@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:totem_rank_demo/models/entities/User.dart';
 import 'package:totem_rank_demo/services/UserService.dart';
+import 'package:totem_rank_demo/views/screens/rank.dart';
 import 'package:totem_rank_demo/views/ui/rank_card.dart';
 import 'package:totem_rank_demo/utils/extensions.dart';
 
@@ -20,6 +21,20 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildContent() {
     final User user = Injector.get<UserService>().user;
+    
+    void onCardPress(rank) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => RankPage(ranks: [rank])),
+      );
+    }
+
+    void onMoreSamePress(rank) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => RankPage(ranks: [rank, rank, rank, rank])),
+      );
+    }
 
     return ListView(
             children: <Widget>[
@@ -40,7 +55,13 @@ class _HomePageState extends State<HomePage> {
               ),
               Column(
                 children: user.ranks.map((e) => 
-                  RankCard(isPreview: true, rank: e, key: Key(e.id.toString()))
+                  RankCard(
+                    key: Key(e.id.toString()),
+                    rank: e,
+                    isPreview: true,
+                    onPress: () => onCardPress(e),
+                    onMorePress: () => onMoreSamePress(e),
+                  )
                 ).toList(),
               ),
             ],

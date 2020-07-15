@@ -36,23 +36,19 @@ import 'package:totem_rank_demo/models/entities/User.dart';
       'dateTime': 1594643160980,
       'records': [
         {
-          'name': 'First',
+          'name': 'Mew',
           'id': 11,
         },
         {
-          'name': 'irst',
+          'name': 'Murr',
           'id': 12,
         },
         {
-          'name': 'rst',
+          'name': 'Mou',
           'id': 13,
         },
         {
-          'name': 'st',
-          'id': 14,
-        },
-        {
-          'name': 't',
+          'name': 'Urrr',
           'id': 15,
         },
       ],

@@ -5,31 +5,53 @@ class RankCard extends StatelessWidget {
 
   final Rank rank;
   final bool isPreview;
+  final Function onPress;
+  final Function onMorePress;
+  
 
   RankCard({
     Key key,
     this.rank,
     this.isPreview = false,
+    this.onPress,
+    this.onMorePress,
   }) : super(key: key);
 
-  List<Widget> buildRecords() {
+  List<Widget> buildRecords(context) {
     List records = isPreview ? rank.records.sublist(0, 3) : rank.records;
+    // var i = 1;
     List<Widget> content = records.map((e) =>
       ListTile(
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Color(e.name.hashCode * e.name.hashCode * e.name.hashCode),
-            borderRadius: BorderRadius.circular(40)
-          ),
-          child: Center(
-            child: Text(
-              e.name[0],
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            // Text(
+            //   '${i++}.',
+            //   style: Theme.of(context).textTheme.bodyText1.copyWith(
+            //         fontSize: 18,
+            //         color: Colors.grey,
+            //       ),
+            // ),
+            // SizedBox(width:10),
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Color(e.name.hashCode * e.name.hashCode * e.name.hashCode),
+                borderRadius: BorderRadius.circular(40)
+              ),
+              child: Center(
+                child: Text(
+                  e.name[0].toUpperCase(),
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              )
             ),
-          )
+          ],
         ),
-        title: Text(e.name),
+        title: Text(
+          e.name,
+        ),
       )
     ).toList();
     int diff = rank.records.length - records.length;
@@ -42,15 +64,38 @@ class RankCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          SizedBox(height: 20),
-          Text(rank.name),
-          ... buildRecords(),
-          SizedBox(height: 20),
-        ],
-      )
+    return InkWell(
+    onTap: onPress,
+      child: Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 20),
+            if (isPreview) Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(width: 10),
+                IconButton(
+                  icon: Icon(Icons.more),
+                  onPressed: onMorePress,
+                ),
+                Expanded(
+                  child: 
+                Text(
+                  rank.name,
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    fontSize: 18,
+                  ),
+                ),
+                ),
+              ]
+            ),
+            ...buildRecords(context),
+            SizedBox(height: 20),
+          ],
+        )
+      ),
     );
   }
 }

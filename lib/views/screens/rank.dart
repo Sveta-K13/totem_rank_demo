@@ -1,47 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:totem_rank_demo/models/entities/Rank.dart';
+import 'package:totem_rank_demo/views/ui/rank_card.dart';
 
 class RankPage extends StatefulWidget {
-  RankPage({Key key, this.title}) : super(key: key);
-  final String title;
+  RankPage({Key key, this.ranks = const []}) : super(key: key);
+  final List<Rank> ranks;
+
 
   @override
   _RankPageState createState() => _RankPageState();
 }
 
 class _RankPageState extends State<RankPage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  List<Widget> getCards() {
+    return widget.ranks.map(
+      (rank) => 
+      Container(
+        padding: EdgeInsets.all(30),
+        // width: 50,
+        child: 
+        RankCard(
+          key: Key(rank.id.toString()),
+          rank: rank,
+        ),
+
+      ),
+    ).toList();
+  }
+
+  String getPageName() {
+    return '${widget.ranks[0]?.name} ${widget.ranks.length > 1 ? 'lists' : ''}' ;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(getPageName()),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+      body: SafeArea(
+        child: PageView(
+          children: getCards(),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      )
     );
   }
 }
