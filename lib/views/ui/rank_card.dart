@@ -19,20 +19,22 @@ class RankCard extends StatelessWidget {
 
   List<Widget> buildRecords(context) {
     List records = isPreview ? rank.records.sublist(0, 3) : rank.records;
-    // var i = 1;
+    var i = 1;
     List<Widget> content = records.map((e) =>
       ListTile(
         leading: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            // Text(
-            //   '${i++}.',
-            //   style: Theme.of(context).textTheme.bodyText1.copyWith(
-            //         fontSize: 18,
-            //         color: Colors.grey,
-            //       ),
-            // ),
-            // SizedBox(width:10),
+            SizedBox(
+              width: 30,
+              child: Text(
+                '${i++}.',
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+              ),
+            ),
             Container(
               width: 40,
               height: 40,
