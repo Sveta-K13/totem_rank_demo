@@ -26,20 +26,20 @@ class _HomePageState extends State<HomePage> {
   void onCardPress(rank) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RankPage(ranks: [rank])),
+      MaterialPageRoute(builder: (context) => RankPage(ranksId: [rank.id])),
     );
   }
 
   void onMoreSamePress(rank) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RankPage(ranks: [rank, rank, rank, rank])),
+      MaterialPageRoute(builder: (context) => RankPage(ranksId: [rank.id, rank.id, rank.id, rank.id])),
     );
   }
 
 
   Widget buildContent(user) {
-    print(user); 
+    print(user.ranks);
     return ListView(
             children: <Widget>[
               SizedBox(height: 20),
@@ -80,10 +80,7 @@ class _HomePageState extends State<HomePage> {
         title: Text('${user.name.capitalize()}`s ranks'),
       ),
       body: StateBuilder<UserService>(
-        // initState: (_, gamesServiceRM) {
-        //   //update state and notify observer
-        //   return gamesServiceRM.setState((s) => s.loadGames());
-        // },
+        observe: () => RM.get<UserService>(),
         builder: (_, userService) {
           return buildContent(userService.state.user);
         }

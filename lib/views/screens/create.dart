@@ -4,8 +4,9 @@ import 'package:totem_rank_demo/models/entities/Rank.dart';
 import 'package:totem_rank_demo/services/UserService.dart';
 
 class CreatePage extends StatefulWidget {
-  CreatePage({Key key, this.title}) : super(key: key);
+  CreatePage({Key key, this.title, this.rank}) : super(key: key);
   final String title;
+  final Rank rank;
 
   @override
   _CreatePageState createState() => _CreatePageState();
@@ -16,16 +17,27 @@ class _CreatePageState extends State<CreatePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String name = '';
   List<String> recordsNames = [''];
+  bool isEditing;
 
-  void _createRank() {
-    final Function createRank = Injector.get<UserService>().createRank;
+  @override
+  void initState() {
+    isEditing = widget.rank != null;
+    if (widget.rank != null) {
+      name = widget.rank.name;
+      recordsNames = widget.rank.records.map((e) => e.name).toList();
+    }
+    super.initState();
+  }
+
+  void _addRank() {
+    final rm = RM.get<UserService>();
 
     var rank = Rank.fromMap({
       'name': name,
       'records': recordsNames.map((e) => {'name': e}),
+      'id': widget.rank?.id,
     });
-
-    createRank(rank);
+    rm.setState((s) => s.addRank(rank));
   }
 
   void onReorder(oldIndex, newIndex) {
@@ -53,12 +65,14 @@ class _CreatePageState extends State<CreatePage> {
     });
   }
 
+  String getTitle() => isEditing ? 'Edit rank' : 'Create rank';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text('Create rank'),
+            title: Text(getTitle()),
           ),
           body: SafeArea(
             child: 
@@ -83,6 +97,7 @@ class _CreatePageState extends State<CreatePage> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
+                    initialValue: name,
                     decoration: InputDecoration(
                       labelText: 'name',
                     ),
@@ -116,11 +131,11 @@ class _CreatePageState extends State<CreatePage> {
                           if (_formKey.currentState.validate()) {
                             // If the form is valid, display a snackbar. In the real world,
                             // you'd often call a server or save the information in a database.
-                            _createRank();
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Rank created')));
+                            _addRank();
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Rank saved')));
                           }
                         },
-                        child: Text('Submit'),
+                        child: Text('Save'),
                       ),
                     ]
                   )

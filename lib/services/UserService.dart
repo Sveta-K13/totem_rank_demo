@@ -179,9 +179,15 @@ class UserService {
     return _user;
   }
 
-  void createRank(Rank rank) async {
+  void addRank(Rank rank) async {
     try {
-      user.ranks.add(rank);
+      int i = user.ranks.indexOf(rank);
+      if (i != -1) {
+        // var newRank = Function.apply(user.ranks[i].copyWith, [], symbolizeKeys(rank.toMap()));
+        user.ranks[i] = rank;
+      } else {
+        user.ranks.add(rank);
+      }
       // TODO save
     } catch(e) {
       // TODO handle error
@@ -189,6 +195,11 @@ class UserService {
     } 
   }
 
+  Map<Symbol, dynamic> symbolizeKeys(Map<String, dynamic> map){
+    final result = new Map<Symbol, dynamic>();
+    map.forEach((String k,v) { result[new Symbol(k)] = v; });
+    return result;
+  }
 
 
 }

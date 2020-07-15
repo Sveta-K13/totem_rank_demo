@@ -72,17 +72,11 @@ class Rank {
     if (identical(this, o)) return true;
   
     return o is Rank &&
-      o.id == id &&
-      o.name == name &&
-      o.dateTime == dateTime &&
-      listEquals(o.records, records);
+      o.id == id;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-      name.hashCode ^
-      dateTime.hashCode ^
-      records.hashCode;
+    return id.hashCode;
   }
 }
