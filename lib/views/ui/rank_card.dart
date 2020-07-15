@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:totem_rank_demo/models/entities/Rank.dart';
 
@@ -18,7 +19,7 @@ class RankCard extends StatelessWidget {
   }) : super(key: key);
 
   List<Widget> buildRecords(context) {
-    List records = isPreview ? rank.records.sublist(0, 3) : rank.records;
+    List records = isPreview ? rank.records.sublist(0, min(rank.records.length, 3)) : rank.records;
     var i = 1;
     List<Widget> content = records.map((e) =>
       ListTile(

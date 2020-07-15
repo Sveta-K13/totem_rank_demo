@@ -14,7 +14,14 @@ class Rank {
     this.name,
     this.dateTime,
     this.records,
-  });
+  }) {
+    if (this.id == null) {
+      this.id = DateTime.now().millisecondsSinceEpoch;
+    }
+    if (this.dateTime == null) {
+      this.dateTime = DateTime.now();
+    }
+  }
 
 
   Rank copyWith({
@@ -46,7 +53,7 @@ class Rank {
     return Rank(
       id: map['id'],
       name: map['name'],
-      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime']),
+      dateTime: map['dateTime'] != null ? DateTime.fromMillisecondsSinceEpoch(map['dateTime']) : DateTime.now(),
       records: List<Record>.from(map['records']?.map((x) => Record.fromMap(x as Map<String, dynamic>))),
     );
   }

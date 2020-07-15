@@ -3,10 +3,15 @@ import 'dart:convert';
 class Record {
   int id;
   final String name;
+
   Record({
     this.id,
     this.name,
-  });
+  }) {
+    if (this.id == null) {
+      this.id = DateTime.now().millisecondsSinceEpoch;
+    }
+  }
 
   Record copyWith({
     String name,

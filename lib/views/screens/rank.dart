@@ -18,7 +18,6 @@ class _RankPageState extends State<RankPage> {
       (rank) => 
       Container(
         padding: EdgeInsets.all(30),
-        // width: 50,
         child: 
         RankCard(
           key: Key(rank.id.toString()),

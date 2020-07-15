@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:totem_rank_demo/models/entities/User.dart';
 import 'package:totem_rank_demo/services/UserService.dart';
+import 'package:totem_rank_demo/views/screens/create.dart';
 import 'package:totem_rank_demo/views/screens/rank.dart';
 import 'package:totem_rank_demo/views/ui/rank_card.dart';
 import 'package:totem_rank_demo/utils/extensions.dart';
@@ -15,27 +16,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  void _createNew() {
-    // TODO
+  void _createNew() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreatePage()),
+    );
   }
 
-  Widget buildContent() {
-    final User user = Injector.get<UserService>().user;
-    
-    void onCardPress(rank) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RankPage(ranks: [rank])),
-      );
-    }
+  void onCardPress(rank) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RankPage(ranks: [rank])),
+    );
+  }
 
-    void onMoreSamePress(rank) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RankPage(ranks: [rank, rank, rank, rank])),
-      );
-    }
+  void onMoreSamePress(rank) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RankPage(ranks: [rank, rank, rank, rank])),
+    );
+  }
 
+
+  Widget buildContent(user) {
+    print(user); 
     return ListView(
             children: <Widget>[
               SizedBox(height: 20),
@@ -54,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.grey[200],
               ),
               Column(
-                children: user.ranks.map((e) => 
+                children: user.ranks.map<Widget>((e) => 
                   RankCard(
                     key: Key(e.id.toString()),
                     rank: e,
@@ -80,8 +84,8 @@ class _HomePageState extends State<HomePage> {
         //   //update state and notify observer
         //   return gamesServiceRM.setState((s) => s.loadGames());
         // },
-        builder: (_, __) {
-          return  buildContent();
+        builder: (_, userService) {
+          return buildContent(userService.state.user);
         }
       ),
       floatingActionButton: FloatingActionButton(

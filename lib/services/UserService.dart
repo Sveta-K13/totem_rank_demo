@@ -179,6 +179,15 @@ class UserService {
     return _user;
   }
 
+  void createRank(Rank rank) async {
+    try {
+      user.ranks.add(rank);
+      // TODO save
+    } catch(e) {
+      // TODO handle error
+      print(e);
+    } 
+  }
 
 
 
