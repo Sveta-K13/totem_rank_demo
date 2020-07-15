@@ -40,7 +40,7 @@ class RankCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Color(e.name.hashCode * e.name.hashCode * e.name.hashCode),
+                color: Color(e.hashCode),
                 borderRadius: BorderRadius.circular(40)
               ),
               child: Center(
