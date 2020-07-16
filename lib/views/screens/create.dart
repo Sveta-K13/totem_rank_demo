@@ -16,17 +16,33 @@ class _CreatePageState extends State<CreatePage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String name = '';
-  List<String> recordsNames = [''];
+  List<Map<String, dynamic>> recordsNames = [
+    {'name': '', 'id': 0}
+  ];
   bool isEditing;
+  FocusNode myFocusNode;
+  // int last = -1;
 
   @override
   void initState() {
     isEditing = widget.rank != null;
     if (widget.rank != null) {
       name = widget.rank.name;
-      recordsNames = widget.rank.records.map((e) => e.name).toList();
+      recordsNames = widget.rank.records
+          .map((e) => {
+                'name': e.name,
+                'id': e.name.hashCode,
+              })
+          .toList();
     }
+    myFocusNode = FocusNode();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    super.dispose();
   }
 
   void _addRank() {
@@ -34,7 +50,7 @@ class _CreatePageState extends State<CreatePage> {
 
     var rank = Rank.fromMap({
       'name': name,
-      'records': recordsNames.map((e) => {'name': e}),
+      'records': recordsNames,
       'id': widget.rank?.id,
     });
     rm.setState((s) => s.addRank(rank));
@@ -52,7 +68,8 @@ class _CreatePageState extends State<CreatePage> {
 
   void addRecord() {
     setState(() {
-      recordsNames.add('');
+      recordsNames
+          .add({'name': '', 'id': DateTime.now().millisecondsSinceEpoch});
     });
   }
 
@@ -123,8 +140,10 @@ class _CreatePageState extends State<CreatePage> {
                     // If the form is valid, display a snackbar. In the real world,
                     // you'd often call a server or save the information in a database.
                     _addRank();
+
                     _scaffoldKey.currentState
                         .showSnackBar(SnackBar(content: Text('Rank saved')));
+                    myFocusNode.requestFocus();
                   }
                 },
                 child: Text('Save'),
@@ -141,8 +160,8 @@ class _CreatePageState extends State<CreatePage> {
     List inputs = recordsNames.map((e) {
       var j = i++;
       return Container(
-          color: Color(e.hashCode),
-          key: Key(e),
+          color: Color(e['name'].hashCode),
+          key: Key(e.hashCode.toString()),
           child: Row(
             children: <Widget>[
               SizedBox(width: 20),
@@ -150,27 +169,33 @@ class _CreatePageState extends State<CreatePage> {
               SizedBox(width: 20),
               Flexible(
                   child: TextFormField(
-                initialValue: e,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  recordsNames[j] = value;
-                },
-                onEditingComplete: () {
-                  setState(() {});
-                },
-              )),
-              IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => setState(() {
-                  print(j);
-                  recordsNames.removeAt(j);
-                }),
-              )
+                      // focusNode: (j == recordsNames.length - 1) ? myFocusNode : null,
+                      textInputAction: (j == recordsNames.length - 1)
+                          ? TextInputAction.next
+                          : null,
+                      initialValue: e['name'],
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        recordsNames[j]['name'] = value;
+                      },
+                      onEditingComplete: () {
+                        setState(() {});
+                      },
+                      onFieldSubmitted: (term) {
+                        // TODO work with focuses
+                        // currentFocus.unfocus();
+                        // FocusScope.of(context).requestFocus(nextFocus);
+                      })),
+              if (recordsNames.length > 1)
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => onRemoveRecord(j),
+                )
             ],
           ));
     }).toList();
