@@ -49,6 +49,35 @@ class _RankPageState extends State<RankPage> {
     );
   }
 
+  void onDelete(userService, rank) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Do you want to delete this rank?'),
+          content: const Text('You couldn`t undo this action'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pop(context);
+                userService.setState((s) => s.deleteRank(rank));
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    //
+  }
+
   @override
   Widget build(BuildContext context) {
     return StateBuilder<UserService>(
@@ -69,7 +98,11 @@ class _RankPageState extends State<RankPage> {
                   if (isOwnCard)
                     IconButton(
                         icon: Icon(Icons.edit),
-                        onPressed: () => onEdit(ranks[0]))
+                        onPressed: () => onEdit(ranks[0])),
+                  if (isOwnCard)
+                    IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => onDelete(userService, ranks[0]))
                 ],
               ),
               body: SafeArea(

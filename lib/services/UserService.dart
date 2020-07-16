@@ -216,7 +216,20 @@ class UserService {
       }
 
       prefs.setString('ranks', jsonEncode(user.ranks));
-      // TODO save
+    } catch (e) {
+      // TODO handle error
+      print(e);
+    }
+  }
+
+  void deleteRank(Rank rank) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      int i = user.ranks.indexOf(rank);
+      if (i != -1) {
+        user.ranks.removeAt(i);
+      }
+      prefs.setString('ranks', jsonEncode(user.ranks));
     } catch (e) {
       // TODO handle error
       print(e);
