@@ -23,21 +23,16 @@ class _RankPageState extends State<RankPage> {
     isOwnCard = widget.ranksId.length == 1;
   }
 
-  List<Widget> getCards(userService) {
-    return ranks
-        .map(
-          (rank) => SizedBox(
-            height: 300,
-            child: Container(
-              padding: EdgeInsets.all(30),
-              child: RankCard(
-                key: Key(rank.id.toString()),
-                rank: rank,
-              ),
-            ),
-          ),
-        )
-        .toList();
+  Widget getCard(rank) {
+    return Container(
+      padding: EdgeInsets.all(30),
+      height: 100,
+      constraints: BoxConstraints.loose(Size(100, 100)),
+      child: RankCard(
+        key: Key(rank.id.toString()),
+        rank: rank,
+      ),
+    );
   }
 
   String getPageName() {
@@ -78,9 +73,11 @@ class _RankPageState extends State<RankPage> {
                 ],
               ),
               body: SafeArea(
-                child: PageView(
-                  children: getCards(userService),
-                ),
+                child: PageView.builder(
+                    itemCount: ranks.length,
+                    itemBuilder: (context, index) {
+                      return getCard(ranks[index]);
+                    }),
               ));
         });
   }
