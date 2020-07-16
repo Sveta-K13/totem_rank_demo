@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   void _createNew() async {
     Navigator.push(
       context,
@@ -33,43 +32,43 @@ class _HomePageState extends State<HomePage> {
   void onMoreSamePress(rank) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RankPage(ranksId: [rank.id, rank.id, rank.id, rank.id])),
+      MaterialPageRoute(
+          builder: (context) => RankPage(ranksId: [1, 2, 3])), // TODO cut trick
     );
   }
 
-
   Widget buildContent(user) {
-    print(user.ranks);
+    // print(user.ranks);
     return ListView(
-            children: <Widget>[
-              SizedBox(height: 20),
-              ListTile(
-                leading: CircleAvatar(
-                  // backgroundImage: AssetImage(ImagePath.andy),
-                  minRadius: 40,
-                  maxRadius: 40,
-                ),
-                title: Text(user.name),
-                subtitle: Text('${user.ranks.length} ranks'),
-              ),
-              Divider(
-                height: 40,
-                thickness: 3.0,
-                color: Colors.grey[200],
-              ),
-              Column(
-                children: user.ranks.map<Widget>((e) => 
-                  RankCard(
+      children: <Widget>[
+        SizedBox(height: 20),
+        ListTile(
+          leading: CircleAvatar(
+            // backgroundImage: AssetImage(ImagePath.andy),
+            minRadius: 40,
+            maxRadius: 40,
+          ),
+          title: Text(user.name),
+          subtitle: Text('${user.ranks.length} ranks'),
+        ),
+        Divider(
+          height: 40,
+          thickness: 3.0,
+          color: Colors.grey[200],
+        ),
+        Column(
+          children: user.ranks
+              .map<Widget>((e) => RankCard(
                     key: Key(e.id.toString()),
                     rank: e,
                     isPreview: true,
                     onPress: () => onCardPress(e),
                     onMorePress: () => onMoreSamePress(e),
-                  )
-                ).toList(),
-              ),
-            ],
-          );
+                  ))
+              .toList(),
+        ),
+      ],
+    );
   }
 
   @override
@@ -80,11 +79,10 @@ class _HomePageState extends State<HomePage> {
         title: Text('${user.name.capitalize()}`s ranks'),
       ),
       body: StateBuilder<UserService>(
-        observe: () => RM.get<UserService>(),
-        builder: (_, userService) {
-          return buildContent(userService.state.user);
-        }
-      ),
+          observe: () => RM.get<UserService>(),
+          builder: (_, userService) {
+            return buildContent(userService.state.user);
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: _createNew,
         tooltip: 'Create',

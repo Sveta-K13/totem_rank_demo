@@ -18,31 +18,32 @@ class _RankPageState extends State<RankPage> {
   List<Rank> ranks = [];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     isOwnCard = widget.ranksId.length == 1;
   }
 
   List<Widget> getCards(userService) {
-    return ranks.map(
-      (rank) => 
-      Container(
-        padding: EdgeInsets.all(30),
-        child: 
-        RankCard(
-          key: Key(rank.id.toString()),
-          rank: rank,
-        ),
-
-      ),
-    ).toList();
+    return ranks
+        .map(
+          (rank) => SizedBox(
+            height: 300,
+            child: Container(
+              padding: EdgeInsets.all(30),
+              child: RankCard(
+                key: Key(rank.id.toString()),
+                rank: rank,
+              ),
+            ),
+          ),
+        )
+        .toList();
   }
 
   String getPageName() {
     if (ranks.length == 0) return '';
-    final title = ranks.length == 1
-      ? ranks[0]?.name
-      : '"${ranks[0]?.name}" lists';
+    final title =
+        ranks.length == 1 ? ranks[0]?.name : '"${ranks[0]?.name}" lists';
     return title;
   }
 
@@ -58,21 +59,29 @@ class _RankPageState extends State<RankPage> {
     return StateBuilder<UserService>(
         observe: () => RM.get<UserService>(),
         builder: (_, userService) {
-              ranks = userService.state.user.ranks.where((element) => widget.ranksId.contains(element.id)).toList();
+          // TODO cut trick
+          if (widget.ranksId.length > 1) {
+            ranks = userService.state.user.ranks;
+          } else {
+            ranks = userService.state.user.ranks
+                .where((element) => widget.ranksId.contains(element.id))
+                .toList();
+          }
           return Scaffold(
-      appBar: AppBar(
-        title: Text(getPageName()),
-        actions: <Widget>[
-          if (isOwnCard) IconButton(icon: Icon(Icons.edit), onPressed: () => onEdit(ranks[0]))
-        ],
-      ),
-      body: SafeArea(
-            child: PageView(
-              children: getCards(userService),
-            ),
-          )
-          );
-        }
-      );
+              appBar: AppBar(
+                title: Text(getPageName()),
+                actions: <Widget>[
+                  if (isOwnCard)
+                    IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () => onEdit(ranks[0]))
+                ],
+              ),
+              body: SafeArea(
+                child: PageView(
+                  children: getCards(userService),
+                ),
+              ));
+        });
   }
 }
