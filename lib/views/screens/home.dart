@@ -73,21 +73,27 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Injector.get<UserService>().user;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${user.name.capitalize()}`s ranks'),
-      ),
-      body: StateBuilder<UserService>(
-          observe: () => RM.get<UserService>(),
-          builder: (_, userService) {
-            return buildContent(userService.state.user);
-          }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createNew,
-        tooltip: 'Create',
-        child: Icon(Icons.add),
-      ),
-    );
+    return StateBuilder<UserService>(
+        initState: (context, model) => model.setState((s) => s.loadUserData()),
+        observe: () => RM.get<UserService>(),
+        builder: (_, userService) {
+          if (userService.state.user == null) {
+            return Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title:
+                  Text('${userService.state.user?.name?.capitalize()}`s ranks'),
+            ),
+            body: buildContent(userService.state.user),
+            floatingActionButton: FloatingActionButton(
+              onPressed: _createNew,
+              tooltip: 'Create',
+              child: Icon(Icons.add),
+            ),
+          );
+        });
   }
 }

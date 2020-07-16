@@ -41,8 +41,6 @@ class _CreatePageState extends State<CreatePage> {
   }
 
   void onReorder(oldIndex, newIndex) {
-    print(oldIndex);
-    print(newIndex);
     setState(() {
       if (newIndex > oldIndex) {
         newIndex -= 1;
@@ -70,98 +68,35 @@ class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            title: Text(getTitle()),
-          ),
-          body: SafeArea(
-            child: 
-              Stack(
-                children: <Widget>[
-                  buildForm(),
-                  // if (userService.isWaiting)
-                  //   FittedBox(
-                  //     child: CircularProgressIndicator(),
-                  //   )
-                ],
-          )   
-          )
-    );
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text(getTitle()),
+        ),
+        body: SafeArea(
+            child: Stack(
+          children: <Widget>[
+            buildForm(),
+            // if (userService.isWaiting)
+            //   FittedBox(
+            //     child: CircularProgressIndicator(),
+            //   )
+          ],
+        )));
   }
 
   Widget buildForm() {
     return Container(
       padding: EdgeInsets.all(20),
-        child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    initialValue: name,
-                    decoration: InputDecoration(
-                      labelText: 'name',
-                    ),
-                    // The validator receives the text that the user has entered.
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      name = value;
-                    },
-                  ),
-                  Flexible(
-                    child:
-                  ReorderableListView(
-                    children: buildRecordsInputs(),
-                    onReorder: onReorder,
-                  )
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-
-                      RaisedButton(child: Icon(Icons.add), onPressed: addRecord),
-                      RaisedButton(
-                        color: Theme.of(context).accentColor,
-                        textTheme: ButtonTextTheme.primary,
-                        onPressed: () {
-                          if (_formKey.currentState.validate()) {
-                            // If the form is valid, display a snackbar. In the real world,
-                            // you'd often call a server or save the information in a database.
-                            _addRank();
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Rank saved')));
-                          }
-                        },
-                        child: Text('Save'),
-                      ),
-                    ]
-                  )
-                ],
-              ),
-            ),
-    );
-  }
-  buildRecordsInputs() {
-    var i = 0;
-    List inputs = recordsNames.map((e) {
-      var j = i++;
-      return 
-      Container(
-        color: Color(e.hashCode),
-
-        key: Key(e),
-      child: Row(
-        children: <Widget>[
-          SizedBox(width: 20),
-          Icon(Icons.drag_handle),
-          SizedBox(width: 20),
-          Flexible(
-            child: 
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
             TextFormField(
-              initialValue: e,
+              initialValue: name,
+              decoration: InputDecoration(
+                labelText: 'name',
+              ),
+              // The validator receives the text that the user has entered.
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter some text';
@@ -169,28 +104,76 @@ class _CreatePageState extends State<CreatePage> {
                 return null;
               },
               onChanged: (value) {
-                recordsNames[j] = value;
+                name = value;
               },
-              onEditingComplete: () {
-                setState(() {
-                });
-              },
-            )
+            ),
+            Flexible(
+                child: ReorderableListView(
+              children: buildRecordsInputs(),
+              onReorder: onReorder,
+            )),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              RaisedButton(child: Icon(Icons.add), onPressed: addRecord),
+              RaisedButton(
+                color: Theme.of(context).accentColor,
+                textTheme: ButtonTextTheme.primary,
+                onPressed: () {
+                  if (_formKey.currentState.validate() &&
+                      recordsNames.length > 0) {
+                    // If the form is valid, display a snackbar. In the real world,
+                    // you'd often call a server or save the information in a database.
+                    _addRank();
+                    _scaffoldKey.currentState
+                        .showSnackBar(SnackBar(content: Text('Rank saved')));
+                  }
+                },
+                child: Text('Save'),
+              ),
+            ])
+          ],
+        ),
+      ),
+    );
+  }
 
-          ),
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () => setState(() {
-              print(j);
-              recordsNames.removeAt(j);
-            }),
-          )
-        ],
-
-      )
-      );
-    }
-    ).toList();
+  buildRecordsInputs() {
+    var i = 0;
+    List inputs = recordsNames.map((e) {
+      var j = i++;
+      return Container(
+          color: Color(e.hashCode),
+          key: Key(e),
+          child: Row(
+            children: <Widget>[
+              SizedBox(width: 20),
+              Icon(Icons.drag_handle),
+              SizedBox(width: 20),
+              Flexible(
+                  child: TextFormField(
+                initialValue: e,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  recordsNames[j] = value;
+                },
+                onEditingComplete: () {
+                  setState(() {});
+                },
+              )),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => setState(() {
+                  print(j);
+                  recordsNames.removeAt(j);
+                }),
+              )
+            ],
+          ));
+    }).toList();
     return inputs;
   }
 }
