@@ -38,13 +38,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildContent(user) {
-    // print(user.ranks);
     return ListView(
       children: <Widget>[
         SizedBox(height: 20),
         ListTile(
           leading: CircleAvatar(
-            // backgroundImage: AssetImage(ImagePath.andy),
             minRadius: 40,
             maxRadius: 40,
           ),

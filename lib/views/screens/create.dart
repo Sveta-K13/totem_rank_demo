@@ -21,7 +21,6 @@ class _CreatePageState extends State<CreatePage> {
   ];
   bool isEditing;
   FocusNode myFocusNode;
-  // int last = -1;
 
   @override
   void initState() {
@@ -160,7 +159,7 @@ class _CreatePageState extends State<CreatePage> {
     List inputs = recordsNames.map((e) {
       var j = i++;
       return Container(
-          color: Color(e['name'].hashCode),
+          color: Color(e['name'].hashCode + e.hashCode),
           key: Key(e.hashCode.toString()),
           child: Row(
             children: <Widget>[
